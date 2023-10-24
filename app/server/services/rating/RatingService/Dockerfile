@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:18-alpine
 
-COPY --from=builder target/server-1.0-SNAPSHOT.jar backend-SNAPSHOT.jar
+COPY --from=builder target/RatingService-0.0.1-SNAPSHOT.jar backend-SNAPSHOT.jar
 
 EXPOSE 8050
 
