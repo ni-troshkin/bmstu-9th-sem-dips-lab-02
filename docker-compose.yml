@@ -29,7 +29,7 @@ services:
     ports:
       - "54321:5432"
     volumes:
-      - pg_data_volume:/data/lib/postgresql/data
+      - db-data:/data/lib/postgresql/data
 
   rating_service:
     image: nitroshkin/service-rating:${APP_VERSION}
