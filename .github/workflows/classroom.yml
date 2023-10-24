@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: docker/setup-buildx-action@v2
+     # - uses: docker/setup-buildx-action@v2
 
       # TODO build and run unit tests
       - name: Build Rating Server
