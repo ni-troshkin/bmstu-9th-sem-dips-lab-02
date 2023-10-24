@@ -45,22 +45,17 @@ public class PgRatingRepo implements IRatingRepo {
     /**
      * Изменение рейтинга пользователя
      * @param username имя пользователя, информацию о котором требуется обновить
-     * @param delta численное изменение рейтинга (на сколько изменился)
+     * @param newRating новое значение рейтинга (на сколько изменился)
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Override
-    public void updateRating(String username, int delta) throws SQLException {
-        String ratingUpd = "UPDATE public.rating SET stars = " +
-                "CASE WHEN stars + ? < 0 THEN 0" +
-                "   WHEN stars + ? > 100 THEN 100" +
-                "   ELSE stars + ? " +
+    public void updateRating(String username, int newRating) throws SQLException {
+        String ratingUpd = "UPDATE public.rating SET stars = ? " +
                 "WHERE username = ?";
 
         PreparedStatement ratingUpdate = conn.prepareStatement(ratingUpd);
-        ratingUpdate.setInt(1, delta);
-        ratingUpdate.setInt(2, delta);
-        ratingUpdate.setInt(3, delta);
-        ratingUpdate.setString(4, username);
+        ratingUpdate.setInt(1, newRating);
+        ratingUpdate.setString(2, username);
         ratingUpdate.executeUpdate();
     }
 }

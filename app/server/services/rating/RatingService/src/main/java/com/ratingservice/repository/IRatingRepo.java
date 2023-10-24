@@ -20,8 +20,8 @@ public interface IRatingRepo {
     /**
      * Изменение рейтинга пользователя
      * @param username имя пользователя, информацию о котором требуется обновить
-     * @param delta численное изменение рейтинга (на сколько изменился)
+     * @param newRating новое значение рейтинга (на сколько изменился)
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
-    public void updateRating(String username, int delta) throws SQLException;
+    public void updateRating(String username, int newRating) throws SQLException;
 }
