@@ -39,11 +39,11 @@ jobs:
           echo "db.url=jdbc:postgresql://rating_db:5432/ratingservice" >> $RATING_DB_PROPERTIES_PATH
           echo "db.username=$RATING_PG_USER" >> $RATING_DB_PROPERTIES_PATH
           echo "db.password=$RATING_PG_PASSWORD" >> $RATING_DB_PROPERTIES_PATH
-        # echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+          # echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
           docker build --quiet -t $RATING_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/RatingService
-        # docker push $IMAGE_NAME:$APP_VERSION
+          # docker push $IMAGE_NAME:$APP_VERSION
           docker build --quiet -t $RATING_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/sql
-        # docker push $DB_IMAGE_NAME:$APP_VERSION
+          # docker push $DB_IMAGE_NAME:$APP_VERSION
 
       - name: Build images
         timeout-minutes: 10
