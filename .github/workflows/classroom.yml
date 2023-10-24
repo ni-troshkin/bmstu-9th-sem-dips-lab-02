@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - rating
+      - server
   pull_request:
     branches:
       - master
