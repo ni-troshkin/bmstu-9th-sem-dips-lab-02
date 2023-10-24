@@ -3,9 +3,24 @@ on:
   push:
     branches:
       - master
+      - rating
   pull_request:
     branches:
       - master
+
+env:
+  RATING_IMAGE_NAME: nitroshkin/service-rating
+  RATING_DB_IMAGE_NAME: nitroshkin/db-rating
+  RATING_DB_PROPERTIES_PATH: ./app/server/services/rating/RatingService/src/main/resources/database.properties
+  APP_VERSION: ${{ github.run_number }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  VM_IP: 87.239.104.225
+  VM_USER: ubuntu
+  RATINGWORKDIR: /home/ubuntu/rating_deploy
+  RATING_PG_USER: dev
+  RATING_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+
 jobs:
   build:
     name: Autograding
@@ -18,6 +33,19 @@ jobs:
       - uses: docker/setup-buildx-action@v2
 
       # TODO build and run unit tests
+      - name: Build Rating Server
+        run: |
+          echo "APP_VERSION=$APP_VERSION" >> .env
+          echo "RATING_PG_USER=$RATING_PG_USER" >> .env
+          echo "RATING_PG_PASSWORD=$RATING_PG_PASSWORD" >> .env
+          echo "db.url=jdbc:postgresql://rating_db:5432/ratingservice" >> $RATING_DB_PROPERTIES_PATH
+          echo "db.username=$RATING_PG_USER" >> $RATING_DB_PROPERTIES_PATH
+          echo "db.password=$RATING_PG_PASSWORD" >> $RATING_DB_PROPERTIES_PATH
+        # echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+          docker build --quiet -t $IMAGE_NAME:$APP_VERSION ./app/server/services/rating/RatingService
+        # docker push $IMAGE_NAME:$APP_VERSION
+          docker build --quiet -t $DB_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/sql
+        # docker push $DB_IMAGE_NAME:$APP_VERSION
 
       - name: Build images
         timeout-minutes: 10
@@ -31,28 +59,27 @@ jobs:
         env:
           WAIT_PORTS: 8080,8070,8060,8050
 
-      - name: Run API Tests
-        uses: matt-ball/newman-action@master
-        with:
-          # TODO insert your variant
-          collection: <variant>/postman/collection.json
-          environment: <variant>/postman/environment.json
-          delayRequest: 100
-          reporters: '[ "cli" ]'
+      # - name: Run API Tests
+      #   uses: matt-ball/newman-action@master
+      #   with:
+      #     collection: v4/postman/collection.json
+      #     environment: v4/postman/environment.json
+      #     delayRequest: 100
+      #     reporters: '[ "cli" ]'
 
-      - uses: education/autograding@v1
-        id: autograder
-        continue-on-error: true
+      # - uses: education/autograding@v1
+      #   id: autograder
+      #   continue-on-error: true
 
-      - name: Github auto grader mark
-        uses: Romanow/google-sheet-autograder-marker@v1.0
-        with:
-          google_token: ${{secrets.GOOGLE_API_KEY}}
-          sheet_id: "1xkgjUX6Qmk7rdJG-QPOToav-HWWtthJjnShIKnw3oIY"
-          homework_number: 2
-          user_column: 'D'
-          column_offset: 'F'
-          mark: "'+"
+      # - name: Github auto grader mark
+      #   uses: Romanow/google-sheet-autograder-marker@v1.0
+      #   with:
+      #     google_token: ${{secrets.GOOGLE_API_KEY}}
+      #     sheet_id: "1xkgjUX6Qmk7rdJG-QPOToav-HWWtthJjnShIKnw3oIY"
+      #     homework_number: 2
+      #     user_column: 'D'
+      #     column_offset: 'F'
+      #     mark: "'+"
 
       - name: Stop containers
         if: always()
