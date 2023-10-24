@@ -13,11 +13,11 @@ env:
   RATING_DB_IMAGE_NAME: nitroshkin/db-rating
   RATING_DB_PROPERTIES_PATH: ./app/server/services/rating/RatingService/src/main/resources/database.properties
   APP_VERSION: ${{ github.run_number }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  VM_IP: 87.239.104.225
-  VM_USER: ubuntu
-  RATINGWORKDIR: /home/ubuntu/rating_deploy
+  # DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  # DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  # VM_IP: 87.239.104.225
+  # VM_USER: ubuntu
+  # RATINGWORKDIR: /home/ubuntu/rating_deploy
   RATING_PG_USER: dev
   RATING_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
 
@@ -28,7 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-        fetch-depth: 0
+          fetch-depth: 0
+
+      - uses: docker/setup-buildx-action@v2
 
       - name: Build Rating Server
         run: |
