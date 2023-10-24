@@ -39,7 +39,7 @@ services:
     ports:
       - "8050:8050"
     depends_on:
-      - db
+      - rating_db
     restart: unless-stopped
 
 volumes:
