@@ -11,10 +11,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Book {
     int id;
-    UUID book_uid;
+    UUID bookUid;
     String name;
     String author;
     String genre;
     Condition condition;
-    int available_cnt;
+    int availableCnt;
 }

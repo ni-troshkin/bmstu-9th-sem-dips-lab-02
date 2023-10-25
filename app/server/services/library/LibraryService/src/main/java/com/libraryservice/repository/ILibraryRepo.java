@@ -22,32 +22,32 @@ public interface ILibraryRepo {
 
     /**
      * Получение списка книг в выбранной библиотеке
-     * @param library_uid UUID библиотеки, в которой хотим получить список книг
+     * @param libraryUid UUID библиотеки, в которой хотим получить список книг
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
-    public ArrayList<Book> getBooksByLibrary(UUID library_uid) throws SQLException;
+    public ArrayList<Book> getBooksByLibrary(UUID libraryUid) throws SQLException;
 
     /**
      * Взятие книги в библиотеке (уменьшение поля available_cnt)
-     * @param library_uid UUID библиотеки, в которой хотим получить книгу
-     * @param book_uid UUID книги, которую нужно взять в библиотеке
+     * @param libraryUid UUID библиотеки, в которой хотим получить книгу
+     * @param bookUid UUID книги, которую нужно взять в библиотеке
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
-    public void takeBook(UUID library_uid, UUID book_uid) throws SQLException, BookIsNotAvailable;
+    public void takeBook(UUID libraryUid, UUID bookUid) throws SQLException, BookIsNotAvailable;
 
     /**
      * Возврат книги в библиотеку (увеличение поля available_cnt)
-     * @param library_uid UUID библиотеки, в которую хотим вернуть книгу
-     * @param book_uid UUID книги, которую нужно вернуть в библиотеку
+     * @param libraryUid UUID библиотеки, в которую хотим вернуть книгу
+     * @param bookUid UUID книги, которую нужно вернуть в библиотеку
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
-    public void returnBook(UUID library_uid, UUID book_uid) throws SQLException;
+    public void returnBook(UUID libraryUid, UUID bookUid) throws SQLException;
 
     /**
      * Проверка доступности книги в библиотеке
-     * @param library_uid UUID библиотеки, в которой ищем книгу
-     * @param book_uid UUID нужной книги
+     * @param libraryUid UUID библиотеки, в которой ищем книгу
+     * @param bookUid UUID нужной книги
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
-    public boolean isAvailable(UUID library_uid, UUID book_uid) throws SQLException;
+    public boolean isAvailable(UUID libraryUid, UUID bookUid) throws SQLException;
 }

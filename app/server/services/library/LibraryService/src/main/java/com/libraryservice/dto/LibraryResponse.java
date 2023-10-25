@@ -1,18 +1,19 @@
-package com.libraryservice.entity;
+package com.libraryservice.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Builder
 @Getter
+@Data
 @AllArgsConstructor
-public class Library {
-    int id;
+@NoArgsConstructor
+public class LibraryResponse {
     UUID libraryUid;
     String name;
-    String city;
     String address;
+    String city;
 }

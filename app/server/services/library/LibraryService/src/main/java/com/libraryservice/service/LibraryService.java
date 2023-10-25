@@ -38,30 +38,30 @@ public class LibraryService {
 
     /**
      * Получение списка книг в выбранной библиотеке
-     * @param library_uid UUID библиотеки, в которой хотим получить список книг
+     * @param libraryUid UUID библиотеки, в которой хотим получить список книг
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
-    public ArrayList<Book> getBooksByLibrary(UUID library_uid) throws SQLException {
-        return repo.getBooksByLibrary(library_uid);
+    public ArrayList<Book> getBooksByLibrary(UUID libraryUid) throws SQLException {
+        return repo.getBooksByLibrary(libraryUid);
     }
 
     /**
      * Взятие книги в библиотеке (уменьшение поля available_cnt)
-     * @param library_uid UUID библиотеки, в которой хотим получить книгу
-     * @param book_uid UUID книги, которую нужно взять в библиотеке
+     * @param libraryUid UUID библиотеки, в которой хотим получить книгу
+     * @param bookUid UUID книги, которую нужно взять в библиотеке
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
-    public void takeBook(UUID library_uid, UUID book_uid) throws SQLException, BookIsNotAvailable {
-        repo.takeBook(library_uid, book_uid);
+    public void takeBook(UUID libraryUid, UUID bookUid) throws SQLException, BookIsNotAvailable {
+        repo.takeBook(libraryUid, bookUid);
     }
 
     /**
      * Возврат книги в библиотеку (увеличение поля available_cnt)
-     * @param library_uid UUID библиотеки, в которую хотим вернуть книгу
-     * @param book_uid UUID книги, которую нужно вернуть в библиотеку
+     * @param libraryUid UUID библиотеки, в которую хотим вернуть книгу
+     * @param bookUid UUID книги, которую нужно вернуть в библиотеку
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
-    public void returnBook(UUID library_uid, UUID book_uid) throws SQLException {
-        repo.returnBook(library_uid, book_uid);
+    public void returnBook(UUID libraryUid, UUID bookUid) throws SQLException {
+        repo.returnBook(libraryUid, bookUid);
     }
 }

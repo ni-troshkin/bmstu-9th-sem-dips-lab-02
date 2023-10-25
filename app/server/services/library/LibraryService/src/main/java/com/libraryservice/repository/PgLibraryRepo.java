@@ -32,7 +32,7 @@ public class PgLibraryRepo implements ILibraryRepo {
     public ArrayList<Library> getLibrariesByCity(String city) throws SQLException {
         ArrayList<Library> libs = new ArrayList<>();
 
-        String getLibs = "SELECT id, library_uid, name, city, address " +
+        String getLibs = "SELECT id, libraryUid, name, city, address " +
                 "FROM public.library " +
                 "WHERE city = ?";
 
@@ -43,7 +43,7 @@ public class PgLibraryRepo implements ILibraryRepo {
         while (rs.next())
         {
             Library lib = new Library(rs.getInt("id"),
-                                        rs.getObject("library_uid", java.util.UUID.class),
+                                        rs.getObject("libraryUid", java.util.UUID.class),
                                         rs.getString("name"), rs.getString("city"),
                                         rs.getString("address"));
             libs.add(lib);
@@ -54,26 +54,26 @@ public class PgLibraryRepo implements ILibraryRepo {
 
     /**
      * Получение списка книг в выбранной библиотеке
-     * @param library_uid UUID библиотеки, в которой хотим получить список книг
+     * @param libraryUid UUID библиотеки, в которой хотим получить список книг
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Override
-    public ArrayList<Book> getBooksByLibrary(UUID library_uid) throws SQLException {
+    public ArrayList<Book> getBooksByLibrary(UUID libraryUid) throws SQLException {
         ArrayList<Book> books = new ArrayList<>();
 
-        String getBooks = "SELECT b.id, b.book_uid, b.name, author, genre, condition, lb.available_count " +
+        String getBooks = "SELECT b.id, b.bookUid, b.name, author, genre, condition, lb.available_count " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
                 "JOIN public.library l ON lb.library_id = l.id " +
-                "WHERE l.library_uid = ?";
+                "WHERE l.libraryUid = ?";
 
         PreparedStatement booksQuery = conn.prepareStatement(getBooks);
-        booksQuery.setObject(1, library_uid);
+        booksQuery.setObject(1, libraryUid);
         ResultSet rs = booksQuery.executeQuery();
 
         while (rs.next())
         {
             Book b = new Book(rs.getInt("id"),
-                    rs.getObject("book_uid", java.util.UUID.class),
+                    rs.getObject("bookUid", java.util.UUID.class),
                     rs.getString("name"), rs.getString("author"),
                     rs.getString("genre"), Condition.valueOf(rs.getString("condition")),
                     rs.getInt("available_count"));
@@ -85,16 +85,16 @@ public class PgLibraryRepo implements ILibraryRepo {
 
     /**
      * Взятие книги в библиотеке (уменьшение поля available_cnt)
-     * @param library_uid UUID библиотеки, в которой хотим получить книгу
-     * @param book_uid UUID книги, которую нужно взять в библиотеке
+     * @param libraryUid UUID библиотеки, в которой хотим получить книгу
+     * @param bookUid UUID книги, которую нужно взять в библиотеке
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Override
-    public void takeBook(UUID library_uid, UUID book_uid) throws SQLException, BookIsNotAvailable {
+    public void takeBook(UUID libraryUid, UUID bookUid) throws SQLException, BookIsNotAvailable {
         conn.setAutoCommit(false);
         conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 
-        if (isAvailable(library_uid, book_uid))
+        if (isAvailable(libraryUid, bookUid))
             throw new BookIsNotAvailable("Нет свободной книги в выбранной библиотеке");
 
         String decCnt = "UPDATE public.library_books " +
@@ -103,55 +103,56 @@ public class PgLibraryRepo implements ILibraryRepo {
                 "(SELECT b.id, l.id  " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
                 "JOIN public.library l ON lb.library_id = l.id " +
-                "WHERE l.library_uid = ? AND b.book_uid = ?)";
+                "WHERE l.libraryUid = ? AND b.bookUid = ?)";
 
         PreparedStatement updAvailable = conn.prepareStatement(decCnt);
-        updAvailable.setObject(1, library_uid);
-        updAvailable.setObject(2, book_uid);
+        updAvailable.setObject(1, libraryUid);
+        updAvailable.setObject(2, bookUid);
         updAvailable.executeUpdate();
 
         conn.commit();
         conn.setAutoCommit(true);
+        conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
     }
 
     /**
      * Возврат книги в библиотеку (увеличение поля available_cnt)
-     * @param library_uid UUID библиотеки, в которую хотим вернуть книгу
-     * @param book_uid UUID книги, которую нужно вернуть в библиотеку
+     * @param libraryUid UUID библиотеки, в которую хотим вернуть книгу
+     * @param bookUid UUID книги, которую нужно вернуть в библиотеку
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Override
-    public void returnBook(UUID library_uid, UUID book_uid) throws SQLException {
+    public void returnBook(UUID libraryUid, UUID bookUid) throws SQLException {
         String incCnt = "UPDATE public.library_books " +
                 "SET available_count = available_count + 1 " +
                 "WHERE (book_id, library_id) IN " +
                 "(SELECT b.id, l.id  " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
                 "JOIN public.library l ON lb.library_id = l.id " +
-                "WHERE l.library_uid = ? AND b.book_uid = ?)";
+                "WHERE l.libraryUid = ? AND b.bookUid = ?)";
 
         PreparedStatement updAvailable = conn.prepareStatement(incCnt);
-        updAvailable.setObject(1, library_uid);
-        updAvailable.setObject(2, book_uid);
+        updAvailable.setObject(1, libraryUid);
+        updAvailable.setObject(2, bookUid);
         updAvailable.executeUpdate();
     }
 
     /**
      * Проверка доступности книги в библиотеке
-     * @param library_uid UUID библиотеки, в которой ищем книгу
-     * @param book_uid UUID нужной книги
+     * @param libraryUid UUID библиотеки, в которой ищем книгу
+     * @param bookUid UUID нужной книги
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Override
-    public boolean isAvailable(UUID library_uid, UUID book_uid) throws SQLException {
+    public boolean isAvailable(UUID libraryUid, UUID bookUid) throws SQLException {
         String getBooks = "SELECT lb.available_count " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
                 "JOIN public.library l ON lb.library_id = l.id " +
-                "WHERE l.library_uid = ? and b.book_uid = ?";
+                "WHERE l.libraryUid = ? and b.bookUid = ?";
 
         PreparedStatement booksQuery = conn.prepareStatement(getBooks);
-        booksQuery.setObject(1, library_uid);
-        booksQuery.setObject(2, book_uid);
+        booksQuery.setObject(1, libraryUid);
+        booksQuery.setObject(2, bookUid);
         ResultSet rs = booksQuery.executeQuery();
 
         int cnt = 0;

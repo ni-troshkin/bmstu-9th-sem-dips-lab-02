@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class BookLibrary {
-    UUID library_uid;
-    UUID book_uid;
-    int available_cnt;
+    UUID libraryUid;
+    UUID bookUid;
+    int availableCnt;
 }
