@@ -20,6 +20,11 @@ env:
   LIBRARY_DB_PROPERTIES_PATH: ./app/server/services/library/LibraryService/src/main/resources/database.properties
   LIBRARY_PG_USER: dev
   LIBRARY_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+  RESERVATION_IMAGE_NAME: nitroshkin/service-reservations
+  RESERVATION_DB_IMAGE_NAME: nitroshkin/db-reservations
+  RESERVATION_DB_PROPERTIES_PATH: ./app/server/services/reservations/ReservationService/src/main/resources/database.properties
+  RESERVATION_PG_USER: dev
+  RESERVATION_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
 
   # DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   # DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -47,15 +52,22 @@ jobs:
           echo "db.password=$RATING_PG_PASSWORD" >> $RATING_DB_PROPERTIES_PATH
           echo "LIBRARY_PG_USER=$LIBRARY_PG_USER" >> .env
           echo "LIBRARY_PG_PASSWORD=$LIBRARY_PG_PASSWORD" >> .env
-          echo "db.url=jdbc:postgresql://library_db:5433/libraryservice" >> $LIBRARY_DB_PROPERTIES_PATH
+          echo "db.url=jdbc:postgresql://library_db:5432/libraryservice" >> $LIBRARY_DB_PROPERTIES_PATH
           echo "db.username=$LIBRARY_PG_USER" >> $LIBRARY_DB_PROPERTIES_PATH
           echo "db.password=$LIBRARY_PG_PASSWORD" >> $LIBRARY_DB_PROPERTIES_PATH
+          echo "RESERVATION_PG_USER=$RESERVATION_PG_USER" >> .env
+          echo "RESERVATION_PG_PASSWORD=$RESERVATION_PG_PASSWORD" >> .env
+          echo "db.url=jdbc:postgresql://reservations_db:5432/reservationservice" >> $RESERVATION_DB_PROPERTIES_PATH
+          echo "db.username=$RESERVATION_PG_USER" >> $RESERVATION_DB_PROPERTIES_PATH
+          echo "db.password=$RESERVATION_PG_PASSWORD" >> $RESERVATION_DB_PROPERTIES_PATH
           # echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
           docker build --quiet -t $RATING_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/RatingService
           docker build --quiet -t $LIBRARY_IMAGE_NAME:$APP_VERSION ./app/server/services/library/LibraryService
+          docker build --quiet -t $RESERVATION_IMAGE_NAME:$APP_VERSION ./app/server/services/reservations/ReservationService
           # docker push $IMAGE_NAME:$APP_VERSION
           docker build --quiet -t $RATING_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/sql
           docker build --quiet -t $LIBRARY_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/library/sql
+          docker build --quiet -t $RESERVATION_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/reservations/sql
           # docker push $DB_IMAGE_NAME:$APP_VERSION
 
       - name: Build images
