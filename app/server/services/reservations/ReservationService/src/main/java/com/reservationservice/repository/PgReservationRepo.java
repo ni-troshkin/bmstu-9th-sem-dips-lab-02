@@ -5,7 +5,6 @@ import com.reservationservice.entity.Status;
 import com.reservationservice.utils.ConnectionManager;
 import org.springframework.stereotype.Repository;
 
-import javax.naming.spi.ResolveResult;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.UUID;
  * Для подключения используется драйвер JDBC
  */
 @Repository
-public class PgRepositoryRepo implements IRepositoryRepo {
+public class PgReservationRepo implements IReservationRepo {
     /**
      * Объект подключения к БД
      */

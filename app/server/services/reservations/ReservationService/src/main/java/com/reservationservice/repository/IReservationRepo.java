@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Интерфейс репозитория используется для работы с таблицей, отвечающей за прокат книг
  */
-public interface IRepositoryRepo {
+public interface IReservationRepo {
     /**
      * Получение всех книг, взятых пользователем в прокат
      * @param username имя пользователя, информацию о котором требуется получить
