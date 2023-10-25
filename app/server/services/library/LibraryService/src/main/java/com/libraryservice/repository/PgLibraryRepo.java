@@ -29,8 +29,7 @@ public class PgLibraryRepo implements ILibraryRepo {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Override
-    public ArrayList<Library> getLibrariesByCity(String city) throws SQLException
-    {
+    public ArrayList<Library> getLibrariesByCity(String city) throws SQLException {
         ArrayList<Library> libs = new ArrayList<>();
 
         String getLibs = "SELECT id, library_uid, name, city, address " +
@@ -59,8 +58,7 @@ public class PgLibraryRepo implements ILibraryRepo {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Override
-    public ArrayList<Book> getBooksByLibrary(UUID library_uid) throws SQLException
-    {
+    public ArrayList<Book> getBooksByLibrary(UUID library_uid) throws SQLException {
         ArrayList<Book> books = new ArrayList<>();
 
         String getBooks = "SELECT b.id, b.book_uid, b.name, author, genre, condition, lb.available_count " +
@@ -91,6 +89,7 @@ public class PgLibraryRepo implements ILibraryRepo {
      * @param book_uid UUID книги, которую нужно взять в библиотеке
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
+    @Override
     public void takeBook(UUID library_uid, UUID book_uid) throws SQLException, BookIsNotAvailable {
         conn.setAutoCommit(false);
         conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
@@ -121,6 +120,7 @@ public class PgLibraryRepo implements ILibraryRepo {
      * @param book_uid UUID книги, которую нужно вернуть в библиотеку
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
+    @Override
     public void returnBook(UUID library_uid, UUID book_uid) throws SQLException {
         String incCnt = "UPDATE public.library_books " +
                 "SET available_count = available_count + 1 " +
@@ -142,6 +142,7 @@ public class PgLibraryRepo implements ILibraryRepo {
      * @param book_uid UUID нужной книги
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
+    @Override
     public boolean isAvailable(UUID library_uid, UUID book_uid) throws SQLException {
         String getBooks = "SELECT lb.available_count " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
