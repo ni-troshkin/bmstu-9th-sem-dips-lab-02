@@ -47,8 +47,8 @@ public class PgReservationRepo implements IReservationRepo {
                     rs.getObject("book_uid", java.util.UUID.class),
                     rs.getObject("library_uid", java.util.UUID.class),
                     Status.valueOf(rs.getString("status")),
-                    rs.getObject("start_date", LocalDateTime.class),
-                    rs.getObject("till_date", LocalDateTime.class));
+                    rs.getDate("start_date").toLocalDate(),
+                    rs.getDate("till_date").toLocalDate());
             reservations.add(reserve);
         }
 
@@ -96,8 +96,8 @@ public class PgReservationRepo implements IReservationRepo {
         reservationInsertion.setObject(3, reservation.getBookUid());
         reservationInsertion.setObject(4, reservation.getLibraryUid());
         reservationInsertion.setString(5, reservation.getStatus().toString());
-        reservationInsertion.setTimestamp(6, java.sql.Timestamp.valueOf(reservation.getStartDate()));
-        reservationInsertion.setTimestamp(7, java.sql.Timestamp.valueOf(reservation.getTillDate()));
+        reservationInsertion.setDate(6, java.sql.Date.valueOf(reservation.getStartDate()));
+        reservationInsertion.setDate(7, java.sql.Date.valueOf(reservation.getTillDate()));
         reservationInsertion.executeUpdate();
     }
 

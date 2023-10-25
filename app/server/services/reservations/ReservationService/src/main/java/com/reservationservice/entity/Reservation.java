@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -17,6 +18,6 @@ public class Reservation {
     UUID bookUid;
     UUID libraryUid;
     Status status;
-    LocalDateTime startDate;
-    LocalDateTime tillDate;
+    LocalDate startDate;
+    LocalDate tillDate;
 }
