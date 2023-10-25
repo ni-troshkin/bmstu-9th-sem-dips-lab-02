@@ -78,11 +78,10 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(@RequestHeader("X-User-Name") String username,
                                                     @RequestBody ReservationRequest reqReservation) throws URISyntaxException, SQLException {
-        reservationService.createReservation(mapper.fromReservationRequest(reqReservation, username));
+        Reservation reservation = mapper.fromReservationRequest(reqReservation, username);
+        reservationService.createReservation(reservation);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                mapper.toReservationResponse(
-                        mapper.fromReservationRequest(reqReservation, username)));
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.toReservationResponse(reservation));
     }
 
     /**
