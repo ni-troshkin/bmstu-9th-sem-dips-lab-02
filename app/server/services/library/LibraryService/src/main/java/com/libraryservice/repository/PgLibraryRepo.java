@@ -32,7 +32,7 @@ public class PgLibraryRepo implements ILibraryRepo {
     public ArrayList<Library> getLibrariesByCity(String city) throws SQLException {
         ArrayList<Library> libs = new ArrayList<>();
 
-        String getLibs = "SELECT id, libraryUid, name, city, address " +
+        String getLibs = "SELECT id, library_uid, name, city, address " +
                 "FROM public.library " +
                 "WHERE city = ?";
 
@@ -43,7 +43,7 @@ public class PgLibraryRepo implements ILibraryRepo {
         while (rs.next())
         {
             Library lib = new Library(rs.getInt("id"),
-                                        rs.getObject("libraryUid", java.util.UUID.class),
+                                        rs.getObject("library_uid", java.util.UUID.class),
                                         rs.getString("name"), rs.getString("city"),
                                         rs.getString("address"));
             libs.add(lib);
@@ -61,19 +61,19 @@ public class PgLibraryRepo implements ILibraryRepo {
     public ArrayList<Book> getBooksByLibrary(UUID libraryUid) throws SQLException {
         ArrayList<Book> books = new ArrayList<>();
 
-        String getBooks = "SELECT b.id, b.bookUid, b.name, author, genre, condition, lb.available_count " +
+        String getBooks = "SELECT b.id, b.book_uid, b.name, author, genre, condition, lb.available_count " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
                 "JOIN public.library l ON lb.library_id = l.id " +
-                "WHERE l.libraryUid = ?";
+                "WHERE l.library_uid = ?::uuid";
 
         PreparedStatement booksQuery = conn.prepareStatement(getBooks);
-        booksQuery.setObject(1, libraryUid);
+        booksQuery.setString(1, libraryUid.toString());
         ResultSet rs = booksQuery.executeQuery();
 
         while (rs.next())
         {
             Book b = new Book(rs.getInt("id"),
-                    rs.getObject("bookUid", java.util.UUID.class),
+                    rs.getObject("book_uid", java.util.UUID.class),
                     rs.getString("name"), rs.getString("author"),
                     rs.getString("genre"), Condition.valueOf(rs.getString("condition")),
                     rs.getInt("available_count"));
@@ -91,10 +91,10 @@ public class PgLibraryRepo implements ILibraryRepo {
      */
     @Override
     public void takeBook(UUID libraryUid, UUID bookUid) throws SQLException, BookIsNotAvailable {
-        conn.setAutoCommit(false);
         conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+        conn.setAutoCommit(false);
 
-        if (isAvailable(libraryUid, bookUid))
+        if (!isAvailable(libraryUid, bookUid))
             throw new BookIsNotAvailable("Нет свободной книги в выбранной библиотеке");
 
         String decCnt = "UPDATE public.library_books " +
@@ -103,7 +103,7 @@ public class PgLibraryRepo implements ILibraryRepo {
                 "(SELECT b.id, l.id  " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
                 "JOIN public.library l ON lb.library_id = l.id " +
-                "WHERE l.libraryUid = ? AND b.bookUid = ?)";
+                "WHERE l.library_uid = ? AND b.book_uid = ?)";
 
         PreparedStatement updAvailable = conn.prepareStatement(decCnt);
         updAvailable.setObject(1, libraryUid);
@@ -129,7 +129,7 @@ public class PgLibraryRepo implements ILibraryRepo {
                 "(SELECT b.id, l.id  " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
                 "JOIN public.library l ON lb.library_id = l.id " +
-                "WHERE l.libraryUid = ? AND b.bookUid = ?)";
+                "WHERE l.library_uid = ? AND b.book_uid = ?)";
 
         PreparedStatement updAvailable = conn.prepareStatement(incCnt);
         updAvailable.setObject(1, libraryUid);
@@ -148,7 +148,7 @@ public class PgLibraryRepo implements ILibraryRepo {
         String getBooks = "SELECT lb.available_count " +
                 "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
                 "JOIN public.library l ON lb.library_id = l.id " +
-                "WHERE l.libraryUid = ? and b.bookUid = ?";
+                "WHERE l.library_uid = ? and b.book_uid = ?";
 
         PreparedStatement booksQuery = conn.prepareStatement(getBooks);
         booksQuery.setObject(1, libraryUid);

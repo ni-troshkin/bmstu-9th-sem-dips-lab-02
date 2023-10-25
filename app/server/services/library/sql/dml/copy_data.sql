@@ -7,7 +7,9 @@
 \set copy_library_books '\\copy library_books from ' :csvdir 'library_books.csv' ' with (format csv);'
 
 :copy_library
+
 :copy_books
+
 :copy_library_books
 
 ALTER SEQUENCE public.library_id_seq RESTART 11;

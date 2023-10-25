@@ -4,7 +4,9 @@ import com.libraryservice.dto.LibraryBookResponse;
 import com.libraryservice.dto.LibraryResponse;
 import com.libraryservice.entity.Book;
 import com.libraryservice.entity.Library;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BookMapper {
     /**
      * Конвертация из сущности БД Book в сущность DTO BookResponse

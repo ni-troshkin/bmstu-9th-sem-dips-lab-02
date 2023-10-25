@@ -63,7 +63,7 @@ public class LibraryController {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Operation(summary = "Получить список книг в библиотеке")
-    @PutMapping("/{libraryUid}/books")
+    @GetMapping("/{libraryUid}/books")
     public ResponseEntity<ArrayList<LibraryBookResponse>> updateRating(@PathVariable UUID libraryUid) throws SQLException {
         ArrayList<Book> books = libraryService.getBooksByLibrary(libraryUid);
 
