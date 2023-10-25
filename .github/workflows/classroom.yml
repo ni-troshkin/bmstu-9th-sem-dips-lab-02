@@ -9,17 +9,23 @@ on:
       - master
 
 env:
+  APP_VERSION: ${{ github.run_number }}
   RATING_IMAGE_NAME: nitroshkin/service-rating
   RATING_DB_IMAGE_NAME: nitroshkin/db-rating
   RATING_DB_PROPERTIES_PATH: ./app/server/services/rating/RatingService/src/main/resources/database.properties
-  APP_VERSION: ${{ github.run_number }}
+  RATING_PG_USER: dev
+  RATING_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+  LIBRARY_IMAGE_NAME: nitroshkin/service-library
+  LIBRARY_DB_IMAGE_NAME: nitroshkin/db-library
+  LIBRARY_DB_PROPERTIES_PATH: ./app/server/services/library/LibraryService/src/main/resources/database.properties
+  LIBRARY_PG_USER: dev
+  LIBRARY_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+
   # DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   # DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   # VM_IP: 87.239.104.225
   # VM_USER: ubuntu
   # RATINGWORKDIR: /home/ubuntu/rating_deploy
-  RATING_PG_USER: dev
-  RATING_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
 
 jobs:
   build:
@@ -39,10 +45,15 @@ jobs:
           echo "db.url=jdbc:postgresql://rating_db:5432/ratingservice" >> $RATING_DB_PROPERTIES_PATH
           echo "db.username=$RATING_PG_USER" >> $RATING_DB_PROPERTIES_PATH
           echo "db.password=$RATING_PG_PASSWORD" >> $RATING_DB_PROPERTIES_PATH
+          echo "db.url=jdbc:postgresql://library_db:5433/libraryservice" >> $LIBRARY_DB_PROPERTIES_PATH
+          echo "db.username=$LIBRARY_PG_USER" >> $LIBRARY_DB_PROPERTIES_PATH
+          echo "db.password=$LIBRARY_PG_PASSWORD" >> $LIBRARY_DB_PROPERTIES_PATH
           # echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
           docker build --quiet -t $RATING_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/RatingService
+          docker build --quiet -t $LIBRARY_IMAGE_NAME:$APP_VERSION ./app/server/services/library/LibraryService
           # docker push $IMAGE_NAME:$APP_VERSION
           docker build --quiet -t $RATING_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/sql
+          docker build --quiet -t $LIBRARY_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/library/sql
           # docker push $DB_IMAGE_NAME:$APP_VERSION
 
       - name: Build images
