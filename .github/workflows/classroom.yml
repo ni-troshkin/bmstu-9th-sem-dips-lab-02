@@ -55,11 +55,13 @@ jobs:
           cat $RATING_DB_PROPERTIES_PATH
           echo "LIBRARY_PG_USER=$LIBRARY_PG_USER" >> .env
           echo "LIBRARY_PG_PASSWORD=$LIBRARY_PG_PASSWORD" >> .env
+          rm -rf $LIBRARY_DB_PROPERTIES_PATH
           echo "db.url=jdbc:postgresql://library_db:5432/libraryservice" >> $LIBRARY_DB_PROPERTIES_PATH
           echo "db.username=$LIBRARY_PG_USER" >> $LIBRARY_DB_PROPERTIES_PATH
           echo "db.password=$LIBRARY_PG_PASSWORD" >> $LIBRARY_DB_PROPERTIES_PATH
           echo "RESERVATIONS_PG_USER=$RESERVATIONS_PG_USER" >> .env
           echo "RESERVATIONS_PG_PASSWORD=$RESERVATIONS_PG_PASSWORD" >> .env
+          rm -rf $RESERVATIONS_DB_PROPERTIES_PATH
           echo "db.url=jdbc:postgresql://reservations_db:5432/reservationservice" >> $RESERVATIONS_DB_PROPERTIES_PATH
           echo "db.username=$RESERVATIONS_PG_USER" >> $RESERVATIONS_DB_PROPERTIES_PATH
           echo "db.password=$RESERVATIONS_PG_PASSWORD" >> $RESERVATIONS_DB_PROPERTIES_PATH
