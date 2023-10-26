@@ -35,6 +35,16 @@ public class ReservationService {
     }
 
     /**
+     * Получение информации о брони
+     * @param reservationUid UUID брони, информацию о которой требуется получить
+     * @return информация об указанной брони
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Reservation getReservation(UUID reservationUid) throws SQLException {
+        return repo.getReservation(reservationUid);
+    }
+
+    /**
      * Получение количества книг на руках у читателя
      * @param username имя пользователя, информацию о котором требуется получить
      * @return число, равное количеству книг на руках у пользователя

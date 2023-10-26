@@ -53,7 +53,7 @@ public class RatingController {
      */
     @Operation(summary = "Обновить рейтинг пользователя")
     @PutMapping("/")
-    public ResponseEntity<String> updateRating(@RequestParam String username, @RequestParam int delta) throws SQLException {
+    public ResponseEntity<String> updateRating(@RequestHeader("X-User-Name") String username, @RequestParam int delta) throws SQLException {
         ratingService.updateRating(username, delta);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

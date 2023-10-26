@@ -123,4 +123,36 @@ public class PgReservationRepo implements IReservationRepo {
         reservationUpdate.setObject(2, reservationUid);
         reservationUpdate.executeUpdate();
     }
+
+    /**
+     * Получение информации о брони
+     * @param reservationUid UUID брони, информацию о которой требуется получить
+     * @return информация об указанной брони
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Reservation getReservation(UUID reservationUid) throws SQLException {
+        Reservation reservation = null;
+
+        String getReservations = "SELECT id, reservation_uid, username, book_uid, " +
+                "library_uid, status, start_date, till_date " +
+                "FROM public.reservation " +
+                "WHERE reservation_uid = ?";
+        PreparedStatement reservationsQuery = conn.prepareStatement(getReservations);
+        reservationsQuery.setObject(1, reservationUid);
+        ResultSet rs = reservationsQuery.executeQuery();
+
+        if (rs.next())
+        {
+            reservation = new Reservation(rs.getInt("id"),
+                    rs.getObject("reservation_uid", java.util.UUID.class),
+                    rs.getString("username"),
+                    rs.getObject("book_uid", java.util.UUID.class),
+                    rs.getObject("library_uid", java.util.UUID.class),
+                    Status.valueOf(rs.getString("status")),
+                    rs.getDate("start_date").toLocalDate(),
+                    rs.getDate("till_date").toLocalDate());
+        }
+
+        return reservation;
+    }
 }

@@ -40,4 +40,12 @@ public interface IReservationRepo {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     public void closeReservation(UUID reservationUid, boolean isExpired) throws SQLException;
+
+    /**
+     * Получение информации о брони
+     * @param reservationUid UUID брони, информацию о которой требуется получить
+     * @return информация об указанной брони
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Reservation getReservation(UUID reservationUid) throws SQLException;
 }

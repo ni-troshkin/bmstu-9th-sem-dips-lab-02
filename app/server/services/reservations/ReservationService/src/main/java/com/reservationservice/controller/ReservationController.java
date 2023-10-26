@@ -93,8 +93,20 @@ public class ReservationController {
     @Operation(summary = "Вернуть книгу в библиотеку")
     @PostMapping("/{reservationUid}/return")
     public ResponseEntity<String> closeReservation(@PathVariable UUID reservationUid,
-                                                                @RequestBody boolean isExpired) throws SQLException {
+                                                                @RequestParam boolean isExpired) throws SQLException {
         reservationService.closeReservation(reservationUid, isExpired);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * Получить информацию о брони
+     * @param reservationUid UUID брони, о которой нужна информация
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    @Operation(summary = "Получить информацию о брони")
+    @GetMapping("/{reservationUid}")
+    public ResponseEntity<ReservationResponse> getReservation(@PathVariable UUID reservationUid) throws SQLException {
+        Reservation reservation = reservationService.getReservation(reservationUid);
+        return ResponseEntity.status(HttpStatus.OK).body(mapper.toReservationResponse(reservation));
     }
 }
