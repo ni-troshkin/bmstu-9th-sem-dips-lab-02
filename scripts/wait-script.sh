@@ -4,6 +4,7 @@ IFS="," read -ra PORTS <<<"$WAIT_PORTS"
 path=$(dirname "$0")
 
 PIDs=()
+echo "THIS SCRIPT"
 for port in "${PORTS[@]}"; do
   "$path"/wait-for.sh -t 120 "http://localhost:$port/api/v1/manage/health" -- echo "Host localhost:$port is active" &
   PIDs+=($!)
