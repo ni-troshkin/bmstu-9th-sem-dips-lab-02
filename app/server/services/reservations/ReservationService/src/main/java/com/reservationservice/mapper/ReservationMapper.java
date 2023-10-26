@@ -6,8 +6,10 @@ import com.reservationservice.entity.Reservation;
 import com.reservationservice.entity.Status;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -27,6 +29,6 @@ public class ReservationMapper {
 
     public Reservation fromReservationRequest(ReservationRequest req, String username) {
         return new Reservation(0, UUID.randomUUID(), username, req.getBookUid(), req.getLibraryUid(),
-                Status.RENTED, LocalDate.now(), LocalDate.parse(req.getTillDate(), DateTimeFormatter.ISO_DATE));
+                Status.RENTED, LocalDate.now(ZoneId.of("Europe/Moscow")), LocalDate.parse(req.getTillDate(), DateTimeFormatter.ISO_DATE));
     }
 }
