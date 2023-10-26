@@ -25,6 +25,7 @@ env:
   RESERVATIONS_DB_PROPERTIES_PATH: ./app/server/services/reservations/ReservationService/src/main/resources/database.properties
   RESERVATIONS_PG_USER: dev
   RESERVATIONS_PG_PASSWORD: ${{ secrets.PG_PASSWORD }}
+  GATEWAY_IMAGE_NAME: nitroshkin/service-gateway
 
   # DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   # DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -64,6 +65,7 @@ jobs:
           docker build --quiet -t $RATING_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/RatingService
           docker build --quiet -t $LIBRARY_IMAGE_NAME:$APP_VERSION ./app/server/services/library/LibraryService
           docker build --quiet -t $RESERVATIONS_IMAGE_NAME:$APP_VERSION ./app/server/services/reservations/ReservationService
+          docker build --quiet -t $GATEWAY_IMAGE_NAME:$APP_VERSION ./app/server/services/gateway/GatewayService
           # docker push $IMAGE_NAME:$APP_VERSION
           docker build --quiet -t $RATING_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/rating/sql
           docker build --quiet -t $LIBRARY_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/library/sql

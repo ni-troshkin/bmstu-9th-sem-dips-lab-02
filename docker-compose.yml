@@ -31,7 +31,7 @@ services:
     volumes:
       - db-data:/data/lib/postgresql/data
 
-  rating_service:
+  rating_server:
     image: nitroshkin/service-rating:${APP_VERSION}
     container_name: rating
     expose:
@@ -96,6 +96,19 @@ services:
       - "8070:8070"
     depends_on:
       - reservation_db
+    restart: unless-stopped
+
+  gateway_server:
+    image: nitroshkin/service-gateway:${APP_VERSION}
+    container_name: gateway
+    expose:
+     - 8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - reservation_server
+      - library_server
+      - rating_server
     restart: unless-stopped
 
 volumes:
