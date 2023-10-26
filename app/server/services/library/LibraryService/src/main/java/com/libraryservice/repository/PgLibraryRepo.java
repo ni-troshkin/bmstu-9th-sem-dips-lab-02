@@ -223,7 +223,7 @@ public class PgLibraryRepo implements ILibraryRepo {
     public Library getLibraryInfo(UUID libraryUid) throws SQLException {
         Library lib = null;
 
-        String getLibrary = "SELECT library_uid, name, city, address FROM public.library " +
+        String getLibrary = "SELECT id, library_uid, name, city, address FROM public.library " +
                 "WHERE library_uid = ?";
 
         PreparedStatement libraryQuery = conn.prepareStatement(getLibrary);

@@ -22,7 +22,6 @@ import java.util.UUID;
 
 @RestController
 @Tag(name = "LIBRARIES")
-@RequestMapping("/libraries")
 public class LibraryController {
     /**
      * Сервис, работающий с пользователями
@@ -46,7 +45,7 @@ public class LibraryController {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Operation(summary = "Получить список библиотек в городе")
-    @GetMapping()
+    @GetMapping("/libraries")
     public ResponseEntity<ArrayList<LibraryResponse>> getLibrariesByCity(@RequestParam("city") String city) throws SQLException {
         ArrayList<Library> libraries = libraryService.getLibrariesByCity(city);
 
@@ -64,7 +63,7 @@ public class LibraryController {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Operation(summary = "Получить список книг в библиотеке")
-    @GetMapping("/{libraryUid}/books")
+    @GetMapping("/libraries/{libraryUid}/books")
     public ResponseEntity<ArrayList<LibraryBookResponse>> updateRating(@PathVariable UUID libraryUid) throws SQLException {
         ArrayList<Book> books = libraryService.getBooksByLibrary(libraryUid);
 
@@ -83,7 +82,7 @@ public class LibraryController {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Operation(summary = "Взять или вернуть книгу")
-    @PutMapping("/{libraryUid}/books/{bookUid}")
+    @PutMapping("/libraries/{libraryUid}/books/{bookUid}")
     public ResponseEntity<String> bookOperation(@PathVariable UUID libraryUid, @PathVariable UUID bookUid,
                                                 @RequestParam("rent") boolean rent) throws SQLException {
         if (!rent)
@@ -109,23 +108,11 @@ public class LibraryController {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Operation(summary = "Получить информацию о книге в конкретной библиотеке")
-    @GetMapping("/{libraryUid}/books/{bookUid}")
+    @GetMapping("/libraries/{libraryUid}/books/{bookUid}")
     public ResponseEntity<LibraryBookResponse> getLibraryBookInfo(@PathVariable UUID libraryUid,
                                                                   @PathVariable UUID bookUid) throws SQLException {
         Book book = libraryService.getLibraryBookInfo(libraryUid, bookUid);
         return ResponseEntity.status(HttpStatus.OK).body(bookMapper.toLibraryBookResponse(book));
-    }
-
-    /**
-     * Получение информации о книге
-     * @param bookUid UUID книги, о которую хотим получить информацию
-     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
-     */
-    @Operation(summary = "Поулчить информацию о книге")
-    @GetMapping("/books/{bookUid}")
-    public ResponseEntity<BookInfo> getBookInfo(@PathVariable UUID bookUid) throws SQLException {
-        Book book = libraryService.getBookInfo(bookUid);
-        return ResponseEntity.status(HttpStatus.OK).body(bookMapper.toBookInfo(book));
     }
 
     /**
@@ -134,7 +121,7 @@ public class LibraryController {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     @Operation(summary = "Получить информацию о библиотеке")
-    @GetMapping("/{libraryUid}")
+    @GetMapping("/libraries/{libraryUid}")
     public ResponseEntity<LibraryResponse> getLibraryInfo(@PathVariable UUID libraryUid) throws SQLException {
         Library lib = libraryService.getLibraryInfo(libraryUid);
         return ResponseEntity.status(HttpStatus.OK).body(libraryMapper.toLibraryResponse(lib));

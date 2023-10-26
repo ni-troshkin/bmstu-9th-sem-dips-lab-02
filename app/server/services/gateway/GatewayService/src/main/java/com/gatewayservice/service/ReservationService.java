@@ -39,7 +39,7 @@ public class ReservationService {
 
         try {
             book = restTemplate.exchange(
-                    libServerUrl + "/api/v1/libraries/books/" + bookUid.toString(),
+                    libServerUrl + "/api/v1/books/" + bookUid.toString(),
                     HttpMethod.GET,
                     entity,
                     new ParameterizedTypeReference<BookInfo>() {
@@ -118,7 +118,7 @@ public class ReservationService {
         ResponseEntity<Integer> rented = null;
         try {
             rented = restTemplate.exchange(
-                    ratingServerUrl + "/api/v1/reservations/rented",
+                    reservServerUrl + "/api/v1/reservations/rented",
                     HttpMethod.GET,
                     entity,
                     new ParameterizedTypeReference<Integer>() {
@@ -171,7 +171,10 @@ public class ReservationService {
     }
 
     private ReservationResponse createReservation(String username, TakeBookRequest req) {
-        HttpEntity<String> entity = new HttpEntity<>("body");
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-User-Name", username);
+
+        HttpEntity<TakeBookRequest> entity = new HttpEntity<>(req, headers);
         ResponseEntity<ReservationResponse> reservation = null;
         try {
             reservation = restTemplate.exchange(
@@ -222,7 +225,7 @@ public class ReservationService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-User-Name", username);
 
-        HttpEntity<String> entity = new HttpEntity<>("body");
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
         ResponseEntity<ArrayList<ReservationResponse>> reservations = null;
         try {
             reservations = restTemplate.exchange(
@@ -271,15 +274,15 @@ public class ReservationService {
         closeReservation(reservationUid, expired);
 
         if (expired)
-            updateRating(username, -1);
+            updateRating(username, -10);
 
         LibraryBookResponse bookInfo = getLibraryBookInfo(reservation.getLibraryUid(),
                                                             reservation.getBookUid());
 
         if (!bookInfo.getCondition().equals(req.getCondition()))
-            updateRating(username, -1);
+            updateRating(username, -10);
         else if (!expired)
-            updateRating(username, 10);
+            updateRating(username, 1);
 
     }
 }

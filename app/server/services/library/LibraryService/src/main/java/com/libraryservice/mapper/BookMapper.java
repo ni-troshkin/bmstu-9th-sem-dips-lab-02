@@ -21,6 +21,8 @@ public class BookMapper {
     }
 
     public BookInfo toBookInfo(Book book) {
+        System.out.println(book.getBookUid().toString() + " " + book.getName() + " "
+                + book.getAuthor() + " " + book.getGenre());
         return new BookInfo(book.getBookUid().toString(), book.getName(),
                 book.getAuthor(), book.getGenre());
     }
