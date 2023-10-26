@@ -48,6 +48,7 @@ jobs:
           echo "APP_VERSION=$APP_VERSION" >> .env
           echo "RATING_PG_USER=$RATING_PG_USER" >> .env
           echo "RATING_PG_PASSWORD=$RATING_PG_PASSWORD" >> .env
+          rm -rf $RATING_DB_PROPERTIES_PATH
           echo "db.url=jdbc:postgresql://rating_db:5432/ratingservice" >> $RATING_DB_PROPERTIES_PATH
           echo "db.username=$RATING_PG_USER" >> $RATING_DB_PROPERTIES_PATH
           echo "db.password=$RATING_PG_PASSWORD" >> $RATING_DB_PROPERTIES_PATH
