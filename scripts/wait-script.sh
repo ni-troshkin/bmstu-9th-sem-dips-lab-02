@@ -14,3 +14,4 @@ for pid in "${PIDs[@]}"; do
     exit 1
   fi
 done
+
