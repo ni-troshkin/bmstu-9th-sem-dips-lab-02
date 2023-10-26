@@ -1,5 +1,6 @@
 package com.libraryservice.mapper;
 
+import com.libraryservice.dto.BookInfo;
 import com.libraryservice.dto.LibraryBookResponse;
 import com.libraryservice.dto.LibraryResponse;
 import com.libraryservice.entity.Book;
@@ -17,5 +18,10 @@ public class BookMapper {
         return new LibraryBookResponse(book.getBookUid(), book.getName(),
                 book.getAuthor(), book.getGenre(),
                 book.getCondition().toString(), book.getAvailableCnt());
+    }
+
+    public BookInfo toBookInfo(Book book) {
+        return new BookInfo(book.getBookUid().toString(), book.getName(),
+                book.getAuthor(), book.getGenre());
     }
 }

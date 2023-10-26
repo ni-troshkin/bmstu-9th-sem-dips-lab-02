@@ -50,4 +50,26 @@ public interface ILibraryRepo {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     public boolean isAvailable(UUID libraryUid, UUID bookUid) throws SQLException;
+
+    /**
+     * Получение информации о книге в конкретной библиотеке
+     * @param libraryUid UUID библиотеки, в которой хотим получить книгу
+     * @param bookUid UUID книги, которую хотим получить
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Book getLibraryBookInfo(UUID libraryUid, UUID bookUid) throws SQLException;
+
+    /**
+     * Получение информации о книге
+     * @param bookUid UUID книги, о которую хотим получить информацию
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Book getBookInfo(UUID bookUid) throws SQLException;
+
+    /**
+     * Получение информации о библиотеке
+     * @param libraryUid UUID библиотеки, о которой нужна информация
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Library getLibraryInfo(UUID libraryUid) throws SQLException;
 }

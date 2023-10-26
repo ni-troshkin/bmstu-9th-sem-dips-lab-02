@@ -162,4 +162,80 @@ public class PgLibraryRepo implements ILibraryRepo {
 
         return cnt > 0;
     }
+
+    /**
+     * Получение информации о книге в конкретной библиотеке
+     * @param libraryUid UUID библиотеки, в которой хотим получить книгу
+     * @param bookUid UUID книги, которую хотим получить
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Book getLibraryBookInfo(UUID libraryUid, UUID bookUid) throws SQLException {
+        Book book = null;
+
+        String getBooks = "SELECT b.id, b.book_uid, b.name, author, genre, condition, lb.available_count " +
+                "FROM public.books b JOIN public.library_books lb ON b.id = lb.book_id " +
+                "JOIN public.library l ON lb.library_id = l.id " +
+                "WHERE l.library_uid = ? and b.book_uid = ?";
+
+        PreparedStatement booksQuery = conn.prepareStatement(getBooks);
+        booksQuery.setObject(1, libraryUid);
+        booksQuery.setObject(2, bookUid);
+        ResultSet rs = booksQuery.executeQuery();
+
+        if (rs.next())
+            book = new Book(rs.getInt("id"),
+                    rs.getObject("book_uid", java.util.UUID.class),
+                    rs.getString("name"), rs.getString("author"),
+                    rs.getString("genre"), Condition.valueOf(rs.getString("condition")),
+                    rs.getInt("available_count"));
+
+        return book;
+    }
+
+    /**
+     * Получение информации о книге
+     * @param bookUid UUID книги, о которую хотим получить информацию
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Book getBookInfo(UUID bookUid) throws SQLException {
+        Book book = null;
+
+        String getBooks = "SELECT book_uid, name, author, genre FROM public.books " +
+                "WHERE book_uid = ?";
+
+        PreparedStatement booksQuery = conn.prepareStatement(getBooks);
+        booksQuery.setObject(1, bookUid);
+        ResultSet rs = booksQuery.executeQuery();
+
+        if (rs.next())
+            book = new Book(0, rs.getObject("book_uid", java.util.UUID.class),
+                    rs.getString("name"), rs.getString("author"),
+                    rs.getString("genre"), Condition.EXCELLENT, 0);
+
+        return book;
+    }
+
+    /**
+     * Получение информации о библиотеке
+     * @param libraryUid UUID библиотеки, о которой нужна информация
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public Library getLibraryInfo(UUID libraryUid) throws SQLException {
+        Library lib = null;
+
+        String getLibrary = "SELECT library_uid, name, city, address FROM public.library " +
+                "WHERE library_uid = ?";
+
+        PreparedStatement libraryQuery = conn.prepareStatement(getLibrary);
+        libraryQuery.setObject(1, libraryUid);
+        ResultSet rs = libraryQuery.executeQuery();
+
+        if (rs.next())
+            lib = new Library(rs.getInt("id"),
+                    rs.getObject("library_uid", java.util.UUID.class),
+                    rs.getString("name"), rs.getString("city"),
+                    rs.getString("address"));
+
+        return lib;
+    }
 }

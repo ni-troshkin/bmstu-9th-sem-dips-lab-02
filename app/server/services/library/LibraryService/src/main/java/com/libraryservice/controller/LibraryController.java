@@ -1,5 +1,6 @@
 package com.libraryservice.controller;
 
+import com.libraryservice.dto.BookInfo;
 import com.libraryservice.dto.LibraryBookResponse;
 import com.libraryservice.dto.LibraryResponse;
 import com.libraryservice.entity.Book;
@@ -83,7 +84,7 @@ public class LibraryController {
      */
     @Operation(summary = "Взять или вернуть книгу")
     @PutMapping("/{libraryUid}/books/{bookUid}")
-    public ResponseEntity<Spring> bookOperation(@PathVariable UUID libraryUid, @PathVariable UUID bookUid,
+    public ResponseEntity<String> bookOperation(@PathVariable UUID libraryUid, @PathVariable UUID bookUid,
                                                 @RequestParam("rent") boolean rent) throws SQLException {
         if (!rent)
             libraryService.returnBook(libraryUid, bookUid);
@@ -99,5 +100,43 @@ public class LibraryController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * Получение информации о книге в конкретной библиотеке
+     * @param libraryUid UUID библиотеки, в которой хотим получить книгу
+     * @param bookUid UUID книги, которую хотим получить
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    @Operation(summary = "Получить информацию о книге в конкретной библиотеке")
+    @GetMapping("/{libraryUid}/books/{bookUid}")
+    public ResponseEntity<LibraryBookResponse> getLibraryBookInfo(@PathVariable UUID libraryUid,
+                                                                  @PathVariable UUID bookUid) throws SQLException {
+        Book book = libraryService.getLibraryBookInfo(libraryUid, bookUid);
+        return ResponseEntity.status(HttpStatus.OK).body(bookMapper.toLibraryBookResponse(book));
+    }
+
+    /**
+     * Получение информации о книге
+     * @param bookUid UUID книги, о которую хотим получить информацию
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    @Operation(summary = "Поулчить информацию о книге")
+    @GetMapping("/books/{bookUid}")
+    public ResponseEntity<BookInfo> getBookInfo(@PathVariable UUID bookUid) throws SQLException {
+        Book book = libraryService.getBookInfo(bookUid);
+        return ResponseEntity.status(HttpStatus.OK).body(bookMapper.toBookInfo(book));
+    }
+
+    /**
+     * Получение информации о библиотеке
+     * @param libraryUid UUID библиотеки, о которой нужна информация
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    @Operation(summary = "Получить информацию о библиотеке")
+    @GetMapping("/{libraryUid}")
+    public ResponseEntity<LibraryResponse> getLibraryInfo(@PathVariable UUID libraryUid) throws SQLException {
+        Library lib = libraryService.getLibraryInfo(libraryUid);
+        return ResponseEntity.status(HttpStatus.OK).body(libraryMapper.toLibraryResponse(lib));
     }
 }
