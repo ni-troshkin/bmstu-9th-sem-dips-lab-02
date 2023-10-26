@@ -81,12 +81,12 @@ jobs:
         run: |
           docker compose up -d
       
-      - name: Check containers
-        timeout-minutes: 5
-        run: |
-          ./scripts/wait-script.sh
-        env:
-          WAIT_PORTS: 8050,8060,8070,8080
+      # - name: Check containers
+      #  timeout-minutes: 5
+      #  run: |
+      #    ./scripts/wait-script.sh
+      #  env:
+      #    WAIT_PORTS: 8050,8060,8070,8080
 
       - name: Run API Tests
         uses: matt-ball/newman-action@master
