@@ -29,6 +29,6 @@ public class ReservationMapper {
 
     public Reservation fromReservationRequest(ReservationRequest req, String username) {
         return new Reservation(0, UUID.randomUUID(), username, req.getBookUid(), req.getLibraryUid(),
-                Status.RENTED, LocalDate.now(ZoneId.of("Europe/Moscow")), LocalDate.parse(req.getTillDate(), DateTimeFormatter.ISO_DATE));
+                Status.RENTED, LocalDate.now(ZoneId.of("UTC")), LocalDate.parse(req.getTillDate(), DateTimeFormatter.ISO_DATE));
     }
 }
