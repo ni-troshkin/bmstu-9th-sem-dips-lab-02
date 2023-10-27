@@ -271,7 +271,6 @@ public class ReservationService {
         int rented = countRented(username);
         UserRatingResponse rating = getRating(username);
         if (rating.getStars() == 0) {
-            addUser(username);
             rating.setStars(1);
         }
         if (rented >= rating.getStars())
