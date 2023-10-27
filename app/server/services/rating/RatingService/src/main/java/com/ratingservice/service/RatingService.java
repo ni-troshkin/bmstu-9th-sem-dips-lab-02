@@ -4,6 +4,7 @@ import com.ratingservice.repository.IRatingRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -51,5 +52,14 @@ public class RatingService {
             repo.addUser(username, newRating);
         else
             repo.updateRating(username, newRating);
+    }
+
+    /**
+     * Добавление нового пользователя
+     * @param username имя пользователя, информацию о котором требуется обновить
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public void addUser(String username) throws SQLException {
+        repo.addUser(username, 1);
     }
 }

@@ -157,7 +157,6 @@ public class ReservationService {
         headers.set("X-User-Name", username);
 
         HttpEntity<String> entity = new HttpEntity<>("body", headers);
-        ResponseEntity<UserRatingResponse> rating = null;
         try {
             restTemplate.exchange(
                     ratingServerUrl + "/api/v1/rating/?delta=" + Integer.valueOf(delta).toString(),
@@ -221,6 +220,23 @@ public class ReservationService {
         }
     }
 
+    private void addUser(String username) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("X-User-Name", username);
+
+        HttpEntity<String> entity = new HttpEntity<>("body", headers);
+        try {
+            restTemplate.exchange(
+                    ratingServerUrl + "/api/v1/rating",
+                    HttpMethod.POST,
+                    entity,
+                    void.class
+            );
+        } catch (HttpClientErrorException e) {
+            e.printStackTrace();
+        }
+    }
+
     public ArrayList<BookReservationResponse> getAllReservations(String username) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-User-Name", username);
@@ -254,7 +270,11 @@ public class ReservationService {
     public TakeBookResponse takeBook(String username, TakeBookRequest req) {
         int rented = countRented(username);
         UserRatingResponse rating = getRating(username);
-        if (rented > rating.getStars())
+        if (rating.getStars() == 0) {
+            addUser(username);
+            rating.setStars(1);
+        }
+        if (rented >= rating.getStars())
             System.out.println("Много");
         ReservationResponse reservation = createReservation(username, req);
         updAvailable(req, true);

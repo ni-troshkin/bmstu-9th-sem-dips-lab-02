@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -56,5 +57,17 @@ public class RatingController {
     public ResponseEntity<String> updateRating(@RequestHeader("X-User-Name") String username, @RequestParam int delta) throws SQLException {
         ratingService.updateRating(username, delta);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    /**
+     * Добавление нового пользователя
+     * @param username имя пользователя, информацию о котором требуется обновить
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    @Operation(summary = "Добавить нового пользователя")
+    @PostMapping()
+    public ResponseEntity<String> addUser(@RequestHeader("X-User-Name") String username) throws SQLException {
+        ratingService.addUser(username);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
