@@ -41,12 +41,15 @@ public class RatingService {
         int oldRating = getRatingByUsername(username);
         int newRating = oldRating + delta;
 
-        if (newRating < 0)
-            newRating = 0;
+        if (newRating < 1)
+            newRating = 1;
 
         if (newRating > 100)
             newRating = 100;
 
-        repo.updateRating(username, newRating);
+        if (oldRating == 0)
+            repo.addUser(username, newRating);
+        else
+            repo.updateRating(username, newRating);
     }
 }

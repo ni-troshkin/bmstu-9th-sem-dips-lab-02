@@ -27,8 +27,6 @@ public class PgRatingRepo implements IRatingRepo {
      */
     @Override
     public int getRatingByUsername(String username) throws SQLException {
-        int rating;
-
         String getRating = "SELECT stars FROM public.rating " +
                 "WHERE username = ?";
 
@@ -56,6 +54,22 @@ public class PgRatingRepo implements IRatingRepo {
         PreparedStatement ratingUpdate = conn.prepareStatement(ratingUpd);
         ratingUpdate.setInt(1, newRating);
         ratingUpdate.setString(2, username);
+        ratingUpdate.executeUpdate();
+    }
+
+    /**
+     * Добавление нового пользователя
+     * @param username имя пользователя, информацию о котором требуется обновить
+     * @param newRating значение рейтинга
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public void addUser(String username, int newRating) throws SQLException {
+        String ratingUpd = "INSERT INTO public.rating (username, stars) " +
+                "VALUES (?, ?)";
+
+        PreparedStatement ratingUpdate = conn.prepareStatement(ratingUpd);
+        ratingUpdate.setString(1, username);
+        ratingUpdate.setInt(2, newRating);
         ratingUpdate.executeUpdate();
     }
 }

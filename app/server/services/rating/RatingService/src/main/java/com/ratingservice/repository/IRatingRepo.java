@@ -24,4 +24,12 @@ public interface IRatingRepo {
      * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
      */
     public void updateRating(String username, int newRating) throws SQLException;
+
+    /**
+     * Добавление нового пользователя
+     * @param username имя пользователя, информацию о котором требуется обновить
+     * @param newRating значение рейтинга
+     * @throws SQLException при неуспешном подключении или внутренней ошибке базы данных
+     */
+    public void addUser(String username, int newRating) throws SQLException;
 }
