@@ -4,4 +4,4 @@
 
 :copy_users
 
-ALTER SEQUENCE public.person_id_person_seq RESTART 11;
+ALTER SEQUENCE public.rating_id_seq RESTART 11;
