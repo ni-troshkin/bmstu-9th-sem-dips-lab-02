@@ -75,6 +75,10 @@ jobs:
           docker build --quiet -t $RESERVATIONS_DB_IMAGE_NAME:$APP_VERSION ./app/server/services/reservations/sql
           # docker push $DB_IMAGE_NAME:$APP_VERSION
 
+      - name: Unit Tests
+        run: |
+          cd ./app/server/services/reservations/ReservationService && mvn clean -e -Dtest=*Test test
+
       - name: Build images
         timeout-minutes: 10
         run: docker compose build
